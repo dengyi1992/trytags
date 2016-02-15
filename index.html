@@ -18,8 +18,8 @@
  -->
 		发送方式</br>
 		<ul>
-		<label for="sendtype_0"><input type="radio" id="sendtype_0" value="broadcast" name="recipient_type" onclick="hide()" checked="checked"> 广播(所有人)</label>
-		<label for="sendtype_1"><input type="radio" id="sendtype_1" value="tags" onclick="show()" name="recipient_type" > 设备标签(Tag)</label></br>
+		<label for="sendtype_0"><input type="radio" id="sendtype_0" value="0" name="recipient_type" onclick="hide()" checked="checked"> 广播(所有人)</label>
+		<label for="sendtype_1"><input type="radio" id="sendtype_1" value="1" onclick="show()" name="recipient_type" > 设备标签(Tag)</label></br>
 
 		<li id="select_tags" >
 			<label><input name="tags" type="checkbox" value="0" />理智型 </label> 
@@ -53,6 +53,8 @@
 		var $messageTitle =$('#message-title');
 		var $messageContent =$('#message-content');
 		var $promotionLink =$('#promotion-link');
+		var $broadcastR =$('#sendtype_0');
+		var $tagsR =$('#sendtype_1');
 		// var $pmTo =$('#pm-to');
 
 		var $chat = $('#chat');
@@ -71,7 +73,17 @@
 			// 	promotionl:$promotionLink.val(),
 			// 	pmto:$pmTo.val()
 			// });
-		    var obj=document.getElementsByName('tags');
+		 var recipient_val=$('input:radio[name="recipient_type"]:checked').val();
+		 if (recipient_val==0) {
+		 	// 广播
+		 	socket.emit('send message',{
+				messaget:$messageTitle.val(),
+				messagec:$messageContent.val(),
+				promotionl:$promotionLink.val(),
+			});
+		 }else if (recipient_val==1) {
+		 	//组播
+		 	var obj=document.getElementsByName('tags');
 		    for(var i=0; i<obj.length; i++){ 
 		    	if(obj[i].checked==true) 
 		    		socket.emit('type',{
@@ -81,6 +93,10 @@
 		    			type:i
 		    		});
 		    } 
+
+		 };
+
+		    
 		    
 		});
 
